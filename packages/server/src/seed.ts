@@ -6,13 +6,7 @@ import Contact from "./models/contact";
 
 async function seed() {
   await connectToDatabase();
-  const existingCount = await Contact.estimatedDocumentCount();
-  //   if (existingCount > 0) {
-  //     console.log(`Seed skipped; ${existingCount} contacts already exist.`);
-  //     return;
-  //   }
-
-  const contacts = Array.from({ length: 200 }, (_, index) => {
+  const contacts = Array.from({ length: 50 }, (_, index) => {
     const firstName = faker.person.firstName();
     const lastName = faker.person.lastName();
     return {

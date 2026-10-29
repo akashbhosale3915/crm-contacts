@@ -12,7 +12,7 @@ npm run seed
 npm run dev
 ```
 
-The client runs through Vite (normally at `http://localhost:5173`) and the API runs at `http://localhost:3000`. Set `MONGO_URI` (and optionally `PORT`) in the environment or a local `.env` file to configure the server. The seed command inserts 50 demonstration contacts only when the target database is empty; it never deletes existing contacts.
+The client runs through Vite (normally at `http://localhost:5173`) and the API runs at `http://localhost:3000`. `MONGO_URI` and `PORT` are optional environment variables that can also be set in a local `.env` file. If `MONGO_URI` is omitted, the server and seed command connect to `mongodb://127.0.0.1:27017/crm`. Each `npm run seed` invocation inserts 50 new demonstration contacts. It does not clear or check existing records, so running it repeatedly appends another batch; a generated email collision with the unique email index can cause an insert to fail. Seeded email addresses use the reserved `.test` domain.
 
 ## Features
 

@@ -6,6 +6,7 @@ import { useDialogAccessibility } from "../../hooks/useDialogAccessibility";
 import {
   getApiErrorMessage,
   isConflictError,
+  isDuplicateEmailError,
 } from "../../services/apiClient";
 import { contactService } from "../../services/contactService";
 
@@ -78,12 +79,17 @@ export default function ContactModal({
       await onRefresh();
       onClose();
     } catch (requestError) {
-      const message = isConflictError(requestError)
-        ? "This contact changed elsewhere. Refresh and retry your update."
-        : getApiErrorMessage(
-            requestError,
-            isEditing ? "Contact update failed" : "Contact creation failed",
-          );
+      let message: string;
+      if (isDuplicateEmailError(requestError)) {
+        message = "A contact with this email already exists. Use a different email address.";
+      } else if (isConflictError(requestError)) {
+        message = "This contact changed elsewhere. Refresh and retry your update.";
+      } else {
+        message = getApiErrorMessage(
+          requestError,
+          isEditing ? "Contact update failed" : "Contact creation failed",
+        );
+      }
       setError(message);
       toast.error(message);
     } finally {

@@ -18,6 +18,11 @@ export const getApiErrorMessage = (
 export const isConflictError = (error: unknown): boolean =>
   axios.isAxiosError(error) && error.response?.status === 409;
 
+export const isDuplicateEmailError = (error: unknown): boolean =>
+  axios.isAxiosError<ApiErrorResponse>(error) &&
+  error.response?.status === 409 &&
+  error.response.data?.error === "Email already exists";
+
 export const isRequestCanceled = (error: unknown): boolean =>
   axios.isCancel(error);
 
