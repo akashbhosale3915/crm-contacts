@@ -31,12 +31,16 @@ Shared TypeScript contracts live in `packages/shared/src/index.d.ts`. The API su
 ## Project structure
 
 - `packages/client/src/pages/ContactsPage.tsx` coordinates list state, URL sharing, theme, and dialogs.
-- `packages/client/src/components/contacts/` contains the list filters and responsive contact-list presentation.
+- `packages/client/src/components/contacts/` contains the filters, contact dialogs, and list composition; `components/contacts/list/` separates desktop table, mobile cards, feedback, pagination, row actions, and tag presentation.
+- `packages/client/src/components/layout/ContactsHeader.tsx` contains the workspace header and theme controls.
 - `packages/client/src/hooks/useContacts.ts` owns contact-list loading, errors, request cancellation, and refresh state.
+- `packages/client/src/hooks/useContactListNavigation.ts` synchronizes list state with the URL and browser history.
 - `packages/client/src/services/` centralizes the HTTP client and typed contact API methods.
 - `packages/server/src/app.ts` configures Express middleware and route registration; `server.ts` connects MongoDB, starts the listener, and handles shutdown.
 - `packages/server/src/routes/`, `controllers/`, and `services/` separate endpoint declarations, HTTP parsing/response handling, and contact business/data operations.
 - `packages/server/src/middleware/` contains not-found and centralized error handling.
+- `packages/server/src/validation/` groups contact input, list-query, and bulk-tag parsers; `validation.ts` re-exports the validation API.
+- `packages/client/src/styles/` separates global/theme foundations, dialog styles, workspace styles, and scrollbar styling; `src/index.css` imports them.
 
 ## Technical decisions
 

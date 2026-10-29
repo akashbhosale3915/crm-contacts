@@ -1,23 +1,18 @@
 import { useCallback, useEffect, useLayoutEffect, useState } from "react";
-import { Moon, Plus, Sun, Tag, Users } from "lucide-react";
 import toast, { Toaster } from "react-hot-toast";
 import type { Contact } from "../../../shared/src";
 import ActivityHistoryModal from "../components/activity/ActivityHistoryModal";
+import BulkTagActions from "../components/contacts/BulkTagActions";
 import ContactFilters from "../components/contacts/ContactFilters";
 import ContactDetailsModal from "../components/contacts/ContactDetailsModal";
 import ContactModal from "../components/contacts/ContactModal";
 import ContactList from "../components/contacts/ContactList";
+import ContactsHeader from "../components/layout/ContactsHeader";
 import { useContacts } from "../hooks/useContacts";
-import {
-  useContactListState,
-  type ContactListQueryUpdate,
-} from "../hooks/useContactListState";
+import { useContactListState } from "../hooks/useContactListState";
+import { useContactListNavigation } from "../hooks/useContactListNavigation";
 import { getApiErrorMessage } from "../services/apiClient";
 import { contactService } from "../services/contactService";
-import {
-  readContactListUrl,
-  writeContactListUrl,
-} from "../utils/contactListUrl";
 
 type ActiveDialog =
   | { type: "create" }
@@ -26,10 +21,8 @@ type ActiveDialog =
   | { type: "history"; contact: Contact }
   | null;
 
-type Theme = "light" | "dark";
-
 export default function ContactsPage() {
-  const [theme, setTheme] = useState<Theme>(() =>
+  const [theme, setTheme] = useState<"light" | "dark">(() =>
     window.localStorage.getItem("crm-theme") === "dark" ? "dark" : "light",
   );
   const [listState, dispatchListState] = useContactListState();
@@ -55,29 +48,16 @@ export default function ContactsPage() {
     sortBy,
     sortOrder,
   });
+  const { updateQuery, updatePage } = useContactListNavigation({
+    state: listState,
+    dispatch: dispatchListState,
+    beginLoading,
+  });
 
   useLayoutEffect(() => {
     window.localStorage.setItem("crm-theme", theme);
     document.documentElement.dataset.theme = theme;
   }, [theme]);
-
-  useEffect(() => {
-    writeContactListUrl(
-      { search, tag, company: company.trim(), sortBy, sortOrder, page },
-      "replace",
-    );
-  }, [company, page, search, sortBy, sortOrder, tag]);
-
-  useEffect(() => {
-    const restoreListState = () => {
-      const state = readContactListUrl();
-      beginLoading();
-      dispatchListState({ type: "url-restored", state });
-    };
-
-    window.addEventListener("popstate", restoreListState);
-    return () => window.removeEventListener("popstate", restoreListState);
-  }, [beginLoading, dispatchListState]);
 
   const fetchTags = useCallback(async () => {
     try {
@@ -136,35 +116,6 @@ export default function ContactsPage() {
     }
   };
 
-  const updateQuery = (
-    values: ContactListQueryUpdate,
-    historyMode: "push" | "replace",
-  ) => {
-    beginLoading();
-    writeContactListUrl(
-      {
-        search,
-        tag,
-        company: company.trim(),
-        sortBy,
-        sortOrder,
-        page: 1,
-        ...values,
-      },
-      historyMode,
-    );
-    dispatchListState({ type: "query-changed", query: values });
-  };
-
-  const updatePage = (nextPage: number) => {
-    beginLoading();
-    writeContactListUrl(
-      { search, tag, company: company.trim(), sortBy, sortOrder, page: nextPage },
-      "push",
-    );
-    dispatchListState({ type: "page-changed", page: nextPage });
-  };
-
   return (
     <div
       data-theme={theme}
@@ -178,47 +129,13 @@ export default function ContactsPage() {
               : undefined,
         }}
       />
-      <header className="crm-app-header mb-4 shrink-0 border-b py-4">
-        <div className="mx-auto flex w-full max-w-6xl items-center justify-between px-4 sm:px-8">
-          <div className="flex min-w-0 items-center gap-2 sm:gap-4">
-            <div className="shrink-0 rounded-lg bg-blue-600 p-2 text-white">
-              <Users size={28} />
-            </div>
-            <div className="min-w-0">
-              <h1 className="crm-app-title truncate text-lg font-bold sm:text-2xl">
-                CRM Contacts Workspace
-              </h1>
-              <p className="crm-app-subtitle hidden text-sm sm:block">
-                Browse, filter, edit &amp; manage contact tags
-              </p>
-            </div>
-          </div>
-          <div className="flex items-center gap-2">
-            <button
-              type="button"
-              onClick={() =>
-                setTheme((current) => (current === "light" ? "dark" : "light"))
-              }
-              aria-label={`Switch to ${theme === "light" ? "dark" : "light"} mode`}
-              className="contact-details-secondary-button flex items-center gap-2 rounded-xl px-3 py-2.5 text-sm font-semibold"
-            >
-              {theme === "light" ? <Moon size={18} /> : <Sun size={18} />}
-              <span className="hidden sm:inline">
-                {theme === "light" ? "Dark mode" : "Light mode"}
-              </span>
-            </button>
-            <button
-              type="button"
-              onClick={() => setActiveDialog({ type: "create" })}
-              aria-label="Add contact"
-              className="contact-details-primary-button flex items-center gap-2 rounded-xl px-4 py-2.5 font-semibold text-white"
-            >
-              <Plus size={18} />
-              <span className="hidden sm:inline">Add Contact</span>
-            </button>
-          </div>
-        </div>
-      </header>
+      <ContactsHeader
+        theme={theme}
+        onThemeToggle={() =>
+          setTheme((current) => (current === "light" ? "dark" : "light"))
+        }
+        onAddContact={() => setActiveDialog({ type: "create" })}
+      />
 
       <main className="mx-auto flex min-h-0 w-full max-w-6xl flex-1 flex-col space-y-4 overflow-hidden px-4 pb-4 sm:px-8">
         <ContactFilters
@@ -287,25 +204,10 @@ export default function ContactsPage() {
           onRetry={() => void refreshContacts()}
           onPageChange={updatePage}
         />
-        {selectedIds.length > 0 && (
-          <section
-            aria-label="Bulk contact actions"
-            className="contact-selection-bar flex shrink-0 flex-wrap items-center justify-between gap-3 rounded-2xl border p-3 shadow-sm sm:px-5"
-          >
-            <span className="font-semibold">
-              {selectedIds.length}{" "}
-              {selectedIds.length === 1 ? "contact" : "contacts"} selected
-            </span>
-            <button
-              type="button"
-              onClick={() => void handleBulkTag()}
-              className="contact-details-primary-button flex w-full items-center justify-center gap-2 rounded-xl px-4 py-2.5 font-semibold text-white sm:w-auto"
-            >
-              <Tag size={16} />
-              Assign bulk tag
-            </button>
-          </section>
-        )}
+        <BulkTagActions
+          selectedCount={selectedIds.length}
+          onAssignTag={() => void handleBulkTag()}
+        />
       </main>
 
       {activeDialog?.type === "create" && (

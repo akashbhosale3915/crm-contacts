@@ -3,6 +3,7 @@ import type { FormEvent } from "react";
 import { UserRound, X } from "lucide-react";
 import type { Contact, ContactInput } from "../../../../shared/src";
 import toast from "react-hot-toast";
+import ContactTagEditor from "./ContactTagEditor";
 import { useDialogAccessibility } from "../../hooks/useDialogAccessibility";
 import {
   getApiErrorMessage,
@@ -41,7 +42,6 @@ export default function ContactModal({
   onRefresh,
 }: ContactModalProps) {
   const [formData, setFormData] = useState(initialFormState(contact));
-  const [newTag, setNewTag] = useState("");
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState("");
   const isEditing = contact !== undefined;
@@ -96,20 +96,6 @@ export default function ContactModal({
     } finally {
       setSaving(false);
     }
-  };
-
-  const addTag = () => {
-    const tag = newTag.trim();
-    if (!tag) return;
-    if (tag.length > 50) {
-      setError("Tags must be 50 characters or fewer.");
-      return;
-    }
-    if (!formData.tags.some((current) => current.toLowerCase() === tag.toLowerCase())) {
-      updateField("tags", [...formData.tags, tag]);
-    }
-    setNewTag("");
-    setError("");
   };
 
   return (
@@ -213,61 +199,12 @@ export default function ContactModal({
                 </div>
               </section>
 
-              <section aria-labelledby="contact-form-tags-heading">
-                <h3 id="contact-form-tags-heading" className="contact-details-section-title">
-                  Tags
-                </h3>
-                <fieldset className="contact-form-tag-panel mt-3">
-                  <legend className="sr-only">Manage contact tags</legend>
-                  <div className="mb-3 flex flex-wrap gap-2">
-                    {formData.tags.length === 0 ? (
-                      <span className="contact-details-empty">No tags assigned</span>
-                    ) : (
-                      formData.tags.map((tag) => (
-                        <span key={tag} className="contact-details-tag inline-flex items-center gap-2">
-                          {tag}
-                          <button
-                            type="button"
-                            aria-label={`Remove ${tag} tag`}
-                            onClick={() =>
-                              updateField(
-                                "tags",
-                                formData.tags.filter((current) => current !== tag),
-                              )
-                            }
-                            className="contact-form-remove-tag"
-                          >
-                            <X size={14} />
-                          </button>
-                        </span>
-                      ))
-                    )}
-                  </div>
-                  <div className="flex gap-2">
-                    <input
-                      className="contact-form-input min-w-0 flex-1"
-                      aria-label="New tag"
-                      placeholder="Add a tag"
-                      value={newTag}
-                      maxLength={50}
-                      onChange={(event) => setNewTag(event.target.value)}
-                      onKeyDown={(event) => {
-                        if (event.key === "Enter") {
-                          event.preventDefault();
-                          addTag();
-                        }
-                      }}
-                    />
-                    <button
-                      type="button"
-                      onClick={addTag}
-                      className="contact-details-secondary-button rounded-xl px-3 py-2 text-sm font-semibold"
-                    >
-                      Add tag
-                    </button>
-                  </div>
-                </fieldset>
-              </section>
+              <ContactTagEditor
+                tags={formData.tags}
+                onChange={(tags) => updateField("tags", tags)}
+                onError={setError}
+                onClearError={() => setError("")}
+              />
               {error && (
                 <p role="alert" className="contact-details-error">
                   {error}

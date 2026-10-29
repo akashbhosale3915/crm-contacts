@@ -1,0 +1,236 @@
+.crm-workspace {
+  background:
+    radial-gradient(ellipse at 12% 0%, rgb(219 234 254 / 45%), transparent 34%),
+    #f1f5f9;
+  color: #172033;
+}
+
+.crm-app-header {
+  border-color: #e8edf4;
+  background: rgb(255 255 255 / 90%);
+  box-shadow: 0 8px 24px rgb(15 23 42 / 4%);
+  backdrop-filter: blur(14px);
+}
+
+.crm-app-title {
+  color: #172033;
+  letter-spacing: -0.025em;
+}
+
+.crm-app-subtitle {
+  color: #64748b;
+}
+
+.contact-workspace-panel {
+  border-color: #e3eaf3;
+  background: rgb(255 255 255 / 94%);
+  box-shadow: 0 8px 24px rgb(15 23 42 / 4%);
+}
+
+.contact-filter-control {
+  min-height: 2.75rem;
+  border-color: #d5dce7;
+  background-color: #ffffff;
+  color: #172033;
+  font-size: 0.875rem;
+}
+
+.contact-filter-control::placeholder {
+  color: #94a3b8;
+}
+
+.contact-filter-control:focus {
+  border-color: #60a5fa;
+  outline: 3px solid rgb(37 99 235 / 14%);
+  outline-offset: 0;
+}
+
+.contact-filter-icon {
+  color: #8492a6;
+}
+
+.contact-workspace-icon-button,
+.contact-list-icon-button {
+  border-color: #e0e7f0;
+  background: #ffffff;
+  color: #64748b;
+}
+
+button.contact-workspace-icon-button:not(:disabled):hover,
+button.contact-list-icon-button:not(:disabled):hover {
+  border-color: #bfdbfe;
+  background: #eff6ff;
+  color: #2563eb;
+}
+
+.contact-selection-bar {
+  border-color: #bfdbfe;
+  background: linear-gradient(110deg, #eff6ff, #f8fafc);
+  color: #1e3a8a;
+}
+
+.contact-table-heading {
+  border-color: #e8edf4;
+  background: #f8fafc;
+  color: #52647e;
+}
+
+.contact-table-heading th {
+  background: #f8fafc;
+}
+
+.contact-mobile-card {
+  border-color: #e3eaf3;
+  background: #ffffff;
+  box-shadow: 0 4px 14px rgb(15 23 42 / 3%);
+}
+
+.contact-mobile-card.is-selected {
+  border-color: #bfdbfe;
+  background: #f3f7ff;
+}
+
+.contact-list-footer {
+  border-color: #e8edf4;
+  background: #f8fafc;
+  color: #64748b;
+}
+
+.contact-list-page-label {
+  color: #172033;
+}
+
+.contact-list-offline {
+  border-color: #fcd34d;
+  background: #fffbeb;
+  color: #92400e;
+}
+
+.contact-list-error {
+  border-color: #fecaca;
+  background: #fef2f2;
+  color: #b91c1c;
+}
+
+.contact-list-retry {
+  border-color: #fca5a5;
+  background: #ffffff;
+  color: #b91c1c;
+}
+
+button.contact-list-retry:not(:disabled):hover {
+  background: #fee2e2;
+}
+
+[data-theme="dark"] .crm-workspace {
+  background:
+    radial-gradient(ellipse at 12% 0%, rgb(30 58 95 / 24%), transparent 34%),
+    #111318;
+  color: #e7eaf0;
+}
+
+[data-theme="dark"] .crm-app-header {
+  border-color: #343b48;
+  background: rgb(27 31 39 / 92%);
+  box-shadow: 0 8px 24px rgb(0 0 0 / 14%);
+}
+
+[data-theme="dark"] .crm-app-title {
+  color: #e7eaf0;
+}
+
+[data-theme="dark"] .crm-app-subtitle {
+  color: #b0b8c5;
+}
+
+[data-theme="dark"] .contact-workspace-panel {
+  border-color: #343b48;
+  background: rgb(27 31 39 / 96%);
+  box-shadow: 0 8px 24px rgb(0 0 0 / 14%);
+}
+
+[data-theme="dark"] .contact-filter-control {
+  border-color: #485264;
+  background-color: #1b1f27;
+  color: #e7eaf0;
+}
+
+[data-theme="dark"] .contact-filter-control::placeholder,
+[data-theme="dark"] .contact-filter-icon {
+  color: #929cac;
+}
+
+[data-theme="dark"] .contact-filter-control:focus {
+  border-color: #60a5fa;
+  outline-color: rgb(147 197 253 / 20%);
+}
+
+[data-theme="dark"] .contact-workspace-icon-button,
+[data-theme="dark"] .contact-list-icon-button {
+  border-color: #485264;
+  background: #222731;
+  color: #b0b8c5;
+}
+
+[data-theme="dark"] button.contact-workspace-icon-button:not(:disabled):hover,
+[data-theme="dark"] button.contact-list-icon-button:not(:disabled):hover {
+  border-color: #244778;
+  background: #172b4d;
+  color: #93c5fd;
+}
+
+[data-theme="dark"] .contact-selection-bar {
+  border-color: #244778;
+  background: linear-gradient(110deg, #172b4d, #222731);
+  color: #c6dcff;
+}
+
+[data-theme="dark"] .contact-table-heading,
+[data-theme="dark"] .contact-table-heading th {
+  border-color: #343b48;
+  background: #222731;
+  color: #b0b8c5;
+}
+
+[data-theme="dark"] .contact-mobile-card {
+  border-color: #343b48;
+  background: #1b1f27;
+  box-shadow: 0 4px 14px rgb(0 0 0 / 12%);
+}
+
+[data-theme="dark"] .contact-mobile-card.is-selected {
+  border-color: #244778;
+  background: #172b4d;
+}
+
+[data-theme="dark"] .contact-list-footer {
+  border-color: #343b48;
+  background: #222731;
+  color: #b0b8c5;
+}
+
+[data-theme="dark"] .contact-list-page-label {
+  color: #e7eaf0;
+}
+
+[data-theme="dark"] .contact-list-offline {
+  border-color: #92400e;
+  background: #422006;
+  color: #fde68a;
+}
+
+[data-theme="dark"] .contact-list-error {
+  border-color: #7f1d1d;
+  background: #450a0a;
+  color: #fecaca;
+}
+
+[data-theme="dark"] .contact-list-retry {
+  border-color: #7f1d1d;
+  background: #1b1f27;
+  color: #fecaca;
+}
+
+[data-theme="dark"] button.contact-list-retry:not(:disabled):hover {
+  background: #5f1717;
+}
