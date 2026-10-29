@@ -168,7 +168,7 @@ export default function ContactsPage() {
   return (
     <div
       data-theme={theme}
-      className="flex h-dvh flex-col overflow-hidden bg-slate-50 text-slate-900 transition-colors"
+      className="crm-workspace flex h-dvh flex-col overflow-hidden transition-colors"
     >
       <Toaster
         toastOptions={{
@@ -178,17 +178,17 @@ export default function ContactsPage() {
               : undefined,
         }}
       />
-      <header className="mb-4 shrink-0 border-b border-gray-200 bg-white py-4">
+      <header className="crm-app-header mb-4 shrink-0 border-b py-4">
         <div className="mx-auto flex w-full max-w-6xl items-center justify-between px-4 sm:px-8">
           <div className="flex min-w-0 items-center gap-2 sm:gap-4">
             <div className="shrink-0 rounded-lg bg-blue-600 p-2 text-white">
               <Users size={28} />
             </div>
             <div className="min-w-0">
-              <h1 className="truncate text-lg font-bold text-slate-900 sm:text-2xl">
+              <h1 className="crm-app-title truncate text-lg font-bold sm:text-2xl">
                 CRM Contacts Workspace
               </h1>
-              <p className="hidden text-sm text-slate-500 sm:block">
+              <p className="crm-app-subtitle hidden text-sm sm:block">
                 Browse, filter, edit &amp; manage contact tags
               </p>
             </div>
@@ -200,7 +200,7 @@ export default function ContactsPage() {
                 setTheme((current) => (current === "light" ? "dark" : "light"))
               }
               aria-label={`Switch to ${theme === "light" ? "dark" : "light"} mode`}
-              className="flex items-center gap-2 rounded-lg border border-gray-200 px-3 py-2.5 text-sm font-medium text-gray-700 transition-colors hover:bg-gray-50"
+              className="contact-details-secondary-button flex items-center gap-2 rounded-xl px-3 py-2.5 text-sm font-semibold"
             >
               {theme === "light" ? <Moon size={18} /> : <Sun size={18} />}
               <span className="hidden sm:inline">
@@ -211,7 +211,7 @@ export default function ContactsPage() {
               type="button"
               onClick={() => setActiveDialog({ type: "create" })}
               aria-label="Add contact"
-              className="flex items-center gap-2 rounded-lg bg-blue-600 px-4 py-2.5 font-medium text-white transition-colors hover:bg-blue-700"
+              className="contact-details-primary-button flex items-center gap-2 rounded-xl px-4 py-2.5 font-semibold text-white"
             >
               <Plus size={18} />
               <span className="hidden sm:inline">Add Contact</span>
@@ -264,24 +264,6 @@ export default function ContactsPage() {
           onRefresh={() => void refreshContacts()}
         />
 
-        <div className="h-17 shrink-0">
-          {selectedIds.length > 0 && (
-            <section className="flex h-full items-center justify-between rounded-xl border border-blue-200 bg-blue-50 p-3 text-blue-900 shadow-sm">
-              <span className="ml-2 font-semibold">
-                {selectedIds.length} contacts selected
-              </span>
-              <button
-                type="button"
-                onClick={() => void handleBulkTag()}
-                className="flex items-center gap-2 rounded-lg bg-blue-600 px-4 py-2 font-medium text-white transition-colors hover:bg-blue-700"
-              >
-                <Tag size={16} />
-                Assign Bulk Tag
-              </button>
-            </section>
-          )}
-        </div>
-
         <ContactList
           contacts={contacts}
           selectedIds={selectedIds}
@@ -305,6 +287,25 @@ export default function ContactsPage() {
           onRetry={() => void refreshContacts()}
           onPageChange={updatePage}
         />
+        {selectedIds.length > 0 && (
+          <section
+            aria-label="Bulk contact actions"
+            className="contact-selection-bar flex shrink-0 flex-wrap items-center justify-between gap-3 rounded-2xl border p-3 shadow-sm sm:px-5"
+          >
+            <span className="font-semibold">
+              {selectedIds.length}{" "}
+              {selectedIds.length === 1 ? "contact" : "contacts"} selected
+            </span>
+            <button
+              type="button"
+              onClick={() => void handleBulkTag()}
+              className="contact-details-primary-button flex w-full items-center justify-center gap-2 rounded-xl px-4 py-2.5 font-semibold text-white sm:w-auto"
+            >
+              <Tag size={16} />
+              Assign bulk tag
+            </button>
+          </section>
+        )}
       </main>
 
       {activeDialog?.type === "create" && (

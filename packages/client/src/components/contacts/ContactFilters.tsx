@@ -40,12 +40,12 @@ export default function ContactFilters({
   return (
     <section
       aria-label="Contact filters"
-      className="flex shrink-0 flex-wrap gap-3 rounded-xl border border-gray-200 bg-white p-3 shadow-sm"
+      className="contact-workspace-panel flex shrink-0 flex-wrap gap-3 rounded-2xl border p-3 shadow-sm sm:p-4"
     >
       <div className="relative min-w-0 flex-1 basis-full sm:min-w-56 sm:basis-auto">
-        <Search className="absolute left-3 top-2.5 h-5 w-5 text-gray-400" />
+        <Search className="contact-filter-icon absolute left-3 top-2.5 h-5 w-5" />
         <input
-          className="w-full rounded-lg border border-gray-200 p-2 pl-10 focus:outline-none focus:ring-2 focus:ring-blue-500"
+          className="contact-filter-control w-full rounded-xl border p-2.5 pl-10"
           placeholder="Search name, email, phone..."
           aria-label="Search contacts"
           value={search}
@@ -54,7 +54,7 @@ export default function ContactFilters({
       </div>
       <select
         aria-label="Filter by tag"
-        className="min-w-0 flex-1 rounded-lg border border-gray-200 bg-white px-3 py-2 text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 sm:w-40 sm:flex-none"
+        className="contact-filter-control min-w-0 flex-1 rounded-xl border px-3 py-2.5 sm:w-40 sm:flex-none"
         value={tag}
         onChange={(event) => onTagChange(event.target.value)}
       >
@@ -66,7 +66,7 @@ export default function ContactFilters({
         ))}
       </select>
       <input
-        className="min-w-0 flex-1 rounded-lg border border-gray-200 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 sm:min-w-48"
+        className="contact-filter-control min-w-0 flex-1 rounded-xl border px-3 py-2.5 sm:min-w-48"
         placeholder="Filter by company..."
         aria-label="Filter by company"
         value={company}
@@ -74,7 +74,7 @@ export default function ContactFilters({
       />
       <select
         aria-label="Sort contacts"
-        className="min-w-0 flex-1 rounded-lg border border-gray-200 bg-white px-3 py-2 text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 sm:w-48 sm:flex-none"
+        className="contact-filter-control min-w-0 flex-1 rounded-xl border px-3 py-2.5 sm:w-48 sm:flex-none"
         value={`${sortBy}:${sortOrder}`}
         onChange={(event) => {
           const [nextSortBy, nextSortOrder] = event.target.value.split(":");
@@ -96,7 +96,7 @@ export default function ContactFilters({
           type="button"
           onClick={onClearFilters}
           aria-label="Clear filters and restore default sorting"
-          className="flex cursor-pointer items-center justify-center gap-2 rounded-lg border border-gray-200 px-3 py-2 text-sm font-medium text-gray-600 transition-colors hover:bg-gray-50"
+          className="contact-details-secondary-button flex items-center justify-center gap-2 rounded-xl px-3 py-2.5 text-sm font-semibold"
         >
           <RotateCcw size={16} />
           Clear filters
@@ -107,7 +107,7 @@ export default function ContactFilters({
         onClick={onRefresh}
         aria-label="Refresh contacts"
         aria-busy={loading}
-        className="rounded-lg border border-gray-200 p-2 text-gray-600 hover:bg-gray-50"
+        className="contact-workspace-icon-button rounded-xl border p-2.5"
       >
         <RefreshCw size={20} className={loading ? "animate-spin" : ""} />
       </button>

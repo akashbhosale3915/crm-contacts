@@ -45,7 +45,7 @@ function ContactActions({
         type="button"
         onClick={() => onEdit(contact)}
         aria-label={`Edit ${name}`}
-        className="rounded border border-gray-200 p-1.5 text-gray-500 transition-colors hover:bg-blue-50 hover:text-blue-600"
+        className="contact-list-icon-button rounded-lg border p-2"
       >
         <Edit2 size={16} />
       </button>
@@ -53,7 +53,7 @@ function ContactActions({
         type="button"
         onClick={() => onHistory(contact)}
         aria-label={`View history for ${name}`}
-        className="rounded border border-gray-200 p-1.5 text-gray-500 transition-colors hover:bg-blue-50 hover:text-blue-600"
+        className="contact-list-icon-button rounded-lg border p-2"
       >
         <History size={16} />
       </button>
@@ -91,60 +91,103 @@ export default function ContactList({
   const renderLoadingRows = () =>
     Array.from({ length: 10 }, (_, row) => (
       <tr key={`skeleton-${row}`} aria-hidden="true">
-        <td className="sticky left-0 z-20 bg-white p-4">
+        <td className="bg-white p-4">
           <div className="skeleton-shimmer h-4 w-4 rounded" />
         </td>
-        <td className="p-4"><div className="skeleton-shimmer h-4 w-32 rounded" /></td>
-        <td className="p-4"><div className="skeleton-shimmer h-4 w-40 rounded" /></td>
-        <td className="p-4"><div className="skeleton-shimmer h-4 w-24 rounded" /></td>
-        <td className="p-4"><div className="skeleton-shimmer h-4 w-32 rounded" /></td>
+        <td className="p-4">
+          <div className="skeleton-shimmer h-4 w-32 rounded" />
+        </td>
+        <td className="p-4">
+          <div className="skeleton-shimmer h-4 w-40 rounded" />
+        </td>
+        <td className="p-4">
+          <div className="skeleton-shimmer h-4 w-24 rounded" />
+        </td>
+        <td className="p-4">
+          <div className="skeleton-shimmer h-4 w-32 rounded" />
+        </td>
         <td className="p-4">
           <div className="flex gap-2">
             <div className="skeleton-shimmer h-6 w-14 rounded-full" />
             <div className="skeleton-shimmer h-6 w-16 rounded-full" />
           </div>
         </td>
-        <td className="p-4"><div className="flex justify-center gap-2">
-          <div className="skeleton-shimmer h-8 w-8 rounded" />
-          <div className="skeleton-shimmer h-8 w-8 rounded" />
-        </div></td>
+        <td className="p-4">
+          <div className="flex justify-center gap-2">
+            <div className="skeleton-shimmer h-8 w-8 rounded" />
+            <div className="skeleton-shimmer h-8 w-8 rounded" />
+          </div>
+        </td>
       </tr>
     ));
 
   return (
-    <section className="flex min-h-0 flex-1 flex-col overflow-hidden rounded-xl border border-gray-200 bg-white shadow-sm">
-      <div className="table-scroll-area min-h-0 flex-1 overflow-auto" aria-busy={loading}>
+    <section className="contact-workspace-panel flex min-h-0 flex-1 flex-col overflow-hidden rounded-2xl border shadow-sm">
+      <div
+        className="table-scroll-area min-h-0 flex-1 overflow-auto"
+        aria-busy={loading}
+      >
         {!online && (
-          <p role="status" className="m-3 rounded border border-amber-300 bg-amber-50 p-3 text-sm text-amber-900">
+          <p
+            role="status"
+            className="contact-list-offline m-3 rounded-xl border p-3 text-sm"
+          >
             You are offline. Showing any previously loaded contacts.
           </p>
         )}
         {error && (
-          <div role="alert" className="m-3 flex flex-wrap items-center justify-between gap-3 rounded border border-red-300 bg-red-50 p-3 text-sm text-red-800">
-            <span>{contacts.length > 0 ? `Showing previously loaded results. ${error}` : error}</span>
-            <button type="button" onClick={onRetry} className="rounded border border-red-300 px-3 py-1.5 font-medium hover:bg-red-100">
+          <div
+            role="alert"
+            className="contact-list-error m-3 flex flex-wrap items-center justify-between gap-3 rounded-xl border p-3 text-sm"
+          >
+            <span>
+              {contacts.length > 0
+                ? `Showing previously loaded results. ${error}`
+                : error}
+            </span>
+            <button
+              type="button"
+              onClick={onRetry}
+              className="contact-list-retry rounded-lg border px-3 py-1.5 font-semibold"
+            >
               Retry
             </button>
           </div>
         )}
-        {loading && <p role="status" className="sr-only">Loading contacts</p>}
+        {loading && (
+          <p role="status" className="sr-only">
+            Loading contacts
+          </p>
+        )}
         <div className="hidden h-full md:block">
           <table className="w-full min-w-267 table-fixed border-collapse text-left">
-            <caption className="sr-only">Contacts and available actions</caption>
+            <caption className="sr-only">
+              Contacts and available actions
+            </caption>
             <colgroup>
-              <col className="w-12" /><col className="w-47.5" /><col className="w-55" />
-              <col className="w-37.5" /><col className="w-45" /><col className="w-40" />
+              <col className="w-12" />
+              <col className="w-47.5" />
+              <col className="w-55" />
+              <col className="w-37.5" />
+              <col className="w-45" />
+              <col className="w-40" />
               <col className="w-30" />
             </colgroup>
             <thead className="sticky top-0 z-30">
-              <tr className="border-b border-gray-200 bg-slate-50 text-sm font-semibold text-slate-700">
-                <th className="sticky left-0 z-40 whitespace-nowrap bg-slate-50 p-4">
+              <tr className="contact-table-heading border-b text-sm font-semibold">
+                <th className="contact-table-heading whitespace-nowrap p-4">
                   <input
                     type="checkbox"
                     aria-label="Select all contacts on this page"
                     className="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
                     checked={allSelected}
-                    onChange={(event) => onSelectionChange(event.target.checked ? contacts.map(({ _id }) => _id) : [])}
+                    onChange={(event) =>
+                      onSelectionChange(
+                        event.target.checked
+                          ? contacts.map(({ _id }) => _id)
+                          : [],
+                      )
+                    }
                   />
                 </th>
                 <th className="whitespace-nowrap p-4">Contact Name</th>
@@ -156,41 +199,118 @@ export default function ContactList({
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-100">
-              {loading ? renderLoadingRows() : contacts.length === 0 ? (
-                <tr><td colSpan={7} className="p-8 text-center text-gray-500">{error ? "Contacts could not be displayed." : "No contacts found."}</td></tr>
-              ) : contacts.map((contact) => {
-                const selected = selectedIds.includes(contact._id);
-                const name = `${contact.firstName} ${contact.lastName}`;
-                return (
-                  <tr key={contact._id} className={`transition-colors hover:bg-slate-50 ${selected ? "bg-blue-50/50" : "bg-white"}`}>
-                    <td className={`sticky left-0 z-20 p-4 ${selected ? "bg-blue-50" : "bg-white"}`}>
-                      <input type="checkbox" aria-label={`Select ${name}`} className="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500" checked={selected} onChange={(event) => toggleSelection(contact._id, event.target.checked)} />
-                    </td>
-                    <td className="overflow-hidden p-4 font-medium text-slate-900">
-                      <button type="button" onClick={() => onOpenDetails(contact._id)} title={name} className="block w-full truncate text-left hover:text-blue-700 hover:underline">{name}</button>
-                    </td>
-                    <td className="overflow-hidden p-4 text-slate-600"><span className="block truncate" title={contact.email || ""}>{contact.email || "—"}</span></td>
-                    <td className="overflow-hidden p-4 text-slate-600"><span className="block truncate" title={contact.phone || ""}>{contact.phone || "—"}</span></td>
-                    <td className="overflow-hidden p-4 text-slate-600"><span className="block truncate" title={contact.company || ""}>{contact.company || "—"}</span></td>
-                    <td className="overflow-hidden p-4">
-                      <div className="flex min-w-0 flex-wrap gap-1" title={contact.tags.join(", ")}>
-                        {contact.tags.slice(0, 2).map((tag) => <span key={tag} className={`block max-w-full truncate rounded-full px-2 py-1 text-xs font-medium ${getTagStyles(tag)}`}>{tag}</span>)}
-                        {contact.tags.length > 2 && <span className="whitespace-nowrap rounded-full bg-gray-100 px-2 py-1 text-xs font-medium text-gray-700">+{contact.tags.length - 2}</span>}
-                      </div>
-                    </td>
-                    <td className="overflow-hidden p-4"><ContactActions contact={contact} onEdit={onEdit} onHistory={onHistory} /></td>
-                  </tr>
-                );
-              })}
+              {loading ? (
+                renderLoadingRows()
+              ) : contacts.length === 0 ? (
+                <tr>
+                  <td colSpan={7} className="p-8 text-center text-gray-500">
+                    {error
+                      ? "Contacts could not be displayed."
+                      : "No contacts found."}
+                  </td>
+                </tr>
+              ) : (
+                contacts.map((contact) => {
+                  const selected = selectedIds.includes(contact._id);
+                  const name = `${contact.firstName} ${contact.lastName}`;
+                  return (
+                    <tr
+                      key={contact._id}
+                      className={`transition-colors hover:bg-slate-50 ${selected ? "bg-blue-50/50" : "bg-white"}`}
+                    >
+                      <td className="p-4">
+                        <input
+                          type="checkbox"
+                          aria-label={`Select ${name}`}
+                          className="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+                          checked={selected}
+                          onChange={(event) =>
+                            toggleSelection(contact._id, event.target.checked)
+                          }
+                        />
+                      </td>
+                      <td className="overflow-hidden p-4 font-medium text-slate-900">
+                        <button
+                          type="button"
+                          onClick={() => onOpenDetails(contact._id)}
+                          title={name}
+                          className="contact-name-link block w-full truncate text-left hover:text-blue-700 hover:underline"
+                        >
+                          {name}
+                        </button>
+                      </td>
+                      <td className="overflow-hidden p-4 text-slate-600">
+                        <span
+                          className="block truncate"
+                          title={contact.email || ""}
+                        >
+                          {contact.email || "—"}
+                        </span>
+                      </td>
+                      <td className="overflow-hidden p-4 text-slate-600">
+                        <span
+                          className="block truncate"
+                          title={contact.phone || ""}
+                        >
+                          {contact.phone || "—"}
+                        </span>
+                      </td>
+                      <td className="overflow-hidden p-4 text-slate-600">
+                        <span
+                          className="block truncate"
+                          title={contact.company || ""}
+                        >
+                          {contact.company || "—"}
+                        </span>
+                      </td>
+                      <td className="overflow-hidden p-4">
+                        <div
+                          className="flex min-w-0 flex-wrap gap-1"
+                          title={contact.tags.join(", ")}
+                        >
+                          {contact.tags.slice(0, 2).map((tag) => (
+                            <span
+                              key={tag}
+                              className={`block max-w-full truncate rounded-full px-2 py-1 text-xs font-medium ${getTagStyles(tag)}`}
+                            >
+                              {tag}
+                            </span>
+                          ))}
+                          {contact.tags.length > 2 && (
+                            <span className="whitespace-nowrap rounded-full bg-gray-100 px-2 py-1 text-xs font-medium text-gray-700">
+                              +{contact.tags.length - 2}
+                            </span>
+                          )}
+                        </div>
+                      </td>
+                      <td className="overflow-hidden p-4">
+                        <ContactActions
+                          contact={contact}
+                          onEdit={onEdit}
+                          onHistory={onHistory}
+                        />
+                      </td>
+                    </tr>
+                  );
+                })
+              )}
             </tbody>
           </table>
         </div>
 
         <div className="p-3 md:hidden">
           {loading ? (
-            <div role="status" aria-label="Loading contacts" className="space-y-3">
+            <div
+              role="status"
+              aria-label="Loading contacts"
+              className="space-y-3"
+            >
               {Array.from({ length: 5 }, (_, index) => (
-                <div key={`mobile-skeleton-${index}`} aria-hidden="true" className="rounded-lg border border-gray-200 p-4">
+                <div
+                  key={`mobile-skeleton-${index}`}
+                  aria-hidden="true"
+                  className="rounded-lg border border-gray-200 p-4"
+                >
                   <div className="skeleton-shimmer mb-3 h-5 w-2/3 rounded" />
                   <div className="skeleton-shimmer mb-2 h-4 w-full rounded" />
                   <div className="skeleton-shimmer h-4 w-1/2 rounded" />
@@ -198,7 +318,11 @@ export default function ContactList({
               ))}
             </div>
           ) : contacts.length === 0 ? (
-            <p className="p-8 text-center text-gray-500">{error ? "Contacts could not be displayed." : "No contacts found."}</p>
+            <p className="p-8 text-center text-gray-500">
+              {error
+                ? "Contacts could not be displayed."
+                : "No contacts found."}
+            </p>
           ) : (
             <ul aria-label="Contacts" className="space-y-3">
               {contacts.map((contact) => {
@@ -206,19 +330,72 @@ export default function ContactList({
                 const name = `${contact.firstName} ${contact.lastName}`;
                 return (
                   <li key={contact._id}>
-                    <article className={`rounded-lg border border-gray-200 p-4 ${selected ? "bg-blue-50/50" : "bg-white"}`}>
+                    <article
+                      className={`contact-mobile-card rounded-2xl border p-4 ${selected ? "is-selected" : ""}`}
+                    >
                       <div className="mb-3 flex items-start gap-3">
-                        <input type="checkbox" aria-label={`Select ${name}`} className="mt-1 h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500" checked={selected} onChange={(event) => toggleSelection(contact._id, event.target.checked)} />
-                        <button type="button" onClick={() => onOpenDetails(contact._id)} className="min-w-0 flex-1 truncate text-left font-semibold text-slate-900 hover:text-blue-700 hover:underline">{name}</button>
-                        <ContactActions contact={contact} onEdit={onEdit} onHistory={onHistory} />
+                        <input
+                          type="checkbox"
+                          aria-label={`Select ${name}`}
+                          className="mt-1 h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+                          checked={selected}
+                          onChange={(event) =>
+                            toggleSelection(contact._id, event.target.checked)
+                          }
+                        />
+                        <button
+                          type="button"
+                          onClick={() => onOpenDetails(contact._id)}
+                          className="contact-name-link min-w-0 flex-1 truncate text-left font-semibold text-slate-900 hover:text-blue-700 hover:underline"
+                        >
+                          {name}
+                        </button>
+                        <ContactActions
+                          contact={contact}
+                          onEdit={onEdit}
+                          onHistory={onHistory}
+                        />
                       </div>
                       <dl className="grid grid-cols-1 gap-2 text-sm">
-                        <div><dt className="font-medium text-slate-500">Email</dt><dd className="break-all text-slate-900">{contact.email || "—"}</dd></div>
-                        <div className="grid grid-cols-2 gap-3">
-                          <div><dt className="font-medium text-slate-500">Phone</dt><dd className="break-words text-slate-900">{contact.phone || "—"}</dd></div>
-                          <div><dt className="font-medium text-slate-500">Company</dt><dd className="break-words text-slate-900">{contact.company || "—"}</dd></div>
+                        <div>
+                          <dt className="font-medium text-slate-500">Email</dt>
+                          <dd className="break-all text-slate-900">
+                            {contact.email || "—"}
+                          </dd>
                         </div>
-                        <div><dt className="font-medium text-slate-500">Tags</dt><dd className="mt-1 flex flex-wrap gap-1">{contact.tags.length > 0 ? contact.tags.map((tag) => <span key={tag} className={`rounded-full px-2 py-1 text-xs font-medium ${getTagStyles(tag)}`}>{tag}</span>) : "—"}</dd></div>
+                        <div className="grid grid-cols-2 gap-3">
+                          <div>
+                            <dt className="font-medium text-slate-500">
+                              Phone
+                            </dt>
+                            <dd className="wrap-break-word text-slate-900">
+                              {contact.phone || "—"}
+                            </dd>
+                          </div>
+                          <div>
+                            <dt className="font-medium text-slate-500">
+                              Company
+                            </dt>
+                            <dd className="wrap-break-word text-slate-900">
+                              {contact.company || "—"}
+                            </dd>
+                          </div>
+                        </div>
+                        <div>
+                          <dt className="font-medium text-slate-500">Tags</dt>
+                          <dd className="mt-1 flex flex-wrap gap-1">
+                            {contact.tags.length > 0
+                              ? contact.tags.map((tag) => (
+                                  <span
+                                    key={tag}
+                                    className={`rounded-full px-2 py-1 text-xs font-medium ${getTagStyles(tag)}`}
+                                  >
+                                    {tag}
+                                  </span>
+                                ))
+                              : "—"}
+                          </dd>
+                        </div>
                       </dl>
                     </article>
                   </li>
@@ -228,18 +405,28 @@ export default function ContactList({
           )}
         </div>
       </div>
-      <footer className="flex shrink-0 flex-col gap-3 border-t border-gray-200 bg-white p-4 text-sm text-slate-600 sm:flex-row sm:items-center sm:justify-between">
+      <footer className="contact-list-footer flex shrink-0 flex-col gap-3 border-t p-4 text-sm sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <span className="font-semibold text-slate-900">
+          <span className="contact-list-page-label font-semibold">
             Page {page} of {totalPages || 1}
           </span>{" "}
           ({totalContacts} total contacts)
         </div>
         <nav aria-label="Contacts pages" className="flex gap-2">
-          <button type="button" disabled={loading || page === 1} onClick={() => onPageChange(page - 1)} className="flex flex-1 items-center justify-center gap-1 rounded-lg border border-gray-200 px-3 py-1.5 transition-colors hover:bg-slate-50 disabled:opacity-50 sm:flex-none">
+          <button
+            type="button"
+            disabled={loading || page === 1}
+            onClick={() => onPageChange(page - 1)}
+            className="contact-details-secondary-button flex flex-1 items-center justify-center gap-1 rounded-xl px-3 py-2 font-semibold disabled:opacity-50 sm:flex-none"
+          >
             <ChevronLeft size={16} /> Previous
           </button>
-          <button type="button" disabled={loading || page >= totalPages || totalPages === 0} onClick={() => onPageChange(page + 1)} className="flex flex-1 items-center justify-center gap-1 rounded-lg border border-gray-200 px-3 py-1.5 transition-colors hover:bg-slate-50 disabled:opacity-50 sm:flex-none">
+          <button
+            type="button"
+            disabled={loading || page >= totalPages || totalPages === 0}
+            onClick={() => onPageChange(page + 1)}
+            className="contact-details-secondary-button flex flex-1 items-center justify-center gap-1 rounded-xl px-3 py-2 font-semibold disabled:opacity-50 sm:flex-none"
+          >
             Next <ChevronRight size={16} />
           </button>
         </nav>

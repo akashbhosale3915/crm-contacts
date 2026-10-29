@@ -1,5 +1,6 @@
 import { useRef, useState } from "react";
 import type { FormEvent } from "react";
+import { UserRound, X } from "lucide-react";
 import type { Contact, ContactInput } from "../../../../shared/src";
 import toast from "react-hot-toast";
 import { useDialogAccessibility } from "../../hooks/useDialogAccessibility";
@@ -112,143 +113,184 @@ export default function ContactModal({
   };
 
   return (
-    <div className="fixed inset-0 z-30 flex items-center justify-center bg-black/50 p-4">
+    <div className="fixed inset-0 z-30 flex items-center justify-center bg-slate-950/55 p-3 backdrop-blur-sm sm:p-6">
       <section
         ref={dialogRef}
         role="dialog"
         aria-modal="true"
         aria-labelledby="contact-form-title"
         tabIndex={-1}
-        className="max-h-[90vh] w-full max-w-2xl overflow-y-auto rounded-lg bg-white p-6 shadow-xl"
+        className="contact-details-dialog flex max-h-[92vh] w-full max-w-2xl flex-col overflow-hidden rounded-2xl shadow-2xl"
       >
-        <h2 id="contact-form-title" className="mb-5 text-xl font-bold">
-          {isEditing ? "Edit Contact" : "Add Contact"}
-        </h2>
-        <form onSubmit={handleSubmit} className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-          <label className="text-sm font-medium">
-            First name
-            <input
-              className="mt-1 w-full rounded border p-2"
-              value={formData.firstName}
-              onChange={(event) => updateField("firstName", event.target.value)}
-              maxLength={100}
-              required
-            />
-          </label>
-          <label className="text-sm font-medium">
-            Last name
-            <input
-              className="mt-1 w-full rounded border p-2"
-              value={formData.lastName}
-              onChange={(event) => updateField("lastName", event.target.value)}
-              maxLength={100}
-              required
-            />
-          </label>
-          <label className="text-sm font-medium">
-            Email
-            <input
-              type="email"
-              className="mt-1 w-full rounded border p-2"
-              value={formData.email}
-              onChange={(event) => updateField("email", event.target.value)}
-              maxLength={254}
-            />
-          </label>
-          <label className="text-sm font-medium">
-            Phone
-            <input
-              className="mt-1 w-full rounded border p-2"
-              value={formData.phone}
-              onChange={(event) => updateField("phone", event.target.value)}
-              maxLength={100}
-            />
-          </label>
-          <label className="text-sm font-medium sm:col-span-2">
-            Company
-            <input
-              className="mt-1 w-full rounded border p-2"
-              value={formData.company}
-              onChange={(event) => updateField("company", event.target.value)}
-              maxLength={100}
-            />
-          </label>
+        <header className="contact-details-header relative shrink-0 px-5 pb-5 pt-5 sm:px-7 sm:pt-6">
+          <button
+            type="button"
+            onClick={onClose}
+            aria-label="Close contact form"
+            className="contact-details-icon-button absolute right-4 top-4 rounded-lg p-2 sm:right-5 sm:top-5"
+          >
+            <X size={18} />
+          </button>
+          <p className="contact-details-eyebrow">
+            {isEditing ? "CONTACT PROFILE" : "NEW CONTACT"}
+          </p>
+          <div className="mt-4 flex items-center gap-4 pr-9">
+            <div aria-hidden="true" className="contact-details-avatar">
+              <UserRound size={24} />
+            </div>
+            <div>
+              <h2 id="contact-form-title" className="contact-details-name">
+                {isEditing ? "Edit contact" : "Add a contact"}
+              </h2>
+              <p className="contact-details-subtitle mt-1">
+                {isEditing
+                  ? "Update contact information and tags."
+                  : "Add someone new to your contacts."}
+              </p>
+            </div>
+          </div>
+        </header>
+        <form
+          id="contact-form"
+          onSubmit={handleSubmit}
+          className="flex min-h-0 flex-1 flex-col"
+        >
+          <div className="contact-details-body min-h-0 flex-1 overflow-y-auto px-5 py-5 sm:px-7">
+            <div className="space-y-5">
+              <section aria-labelledby="contact-form-info-heading">
+                <h3 id="contact-form-info-heading" className="contact-details-section-title">
+                  Contact information
+                </h3>
+                <div className="contact-form-grid mt-3">
+                  <label className="contact-form-field">
+                    First name
+                    <input
+                      className="contact-form-input"
+                      value={formData.firstName}
+                      onChange={(event) => updateField("firstName", event.target.value)}
+                      maxLength={100}
+                      required
+                    />
+                  </label>
+                  <label className="contact-form-field">
+                    Last name
+                    <input
+                      className="contact-form-input"
+                      value={formData.lastName}
+                      onChange={(event) => updateField("lastName", event.target.value)}
+                      maxLength={100}
+                      required
+                    />
+                  </label>
+                  <label className="contact-form-field">
+                    Email
+                    <input
+                      type="email"
+                      className="contact-form-input"
+                      value={formData.email}
+                      onChange={(event) => updateField("email", event.target.value)}
+                      maxLength={254}
+                    />
+                  </label>
+                  <label className="contact-form-field">
+                    Phone
+                    <input
+                      className="contact-form-input"
+                      value={formData.phone}
+                      onChange={(event) => updateField("phone", event.target.value)}
+                      maxLength={100}
+                    />
+                  </label>
+                  <label className="contact-form-field sm:col-span-2">
+                    Company
+                    <input
+                      className="contact-form-input"
+                      value={formData.company}
+                      onChange={(event) => updateField("company", event.target.value)}
+                      maxLength={100}
+                    />
+                  </label>
+                </div>
+              </section>
 
-          <fieldset className="sm:col-span-2">
-            <legend className="mb-2 text-sm font-medium">Tags</legend>
-            <div className="mb-3 flex flex-wrap gap-2">
-              {formData.tags.length === 0 ? (
-                <span className="text-sm text-gray-500">No tags assigned</span>
-              ) : (
-                formData.tags.map((tag) => (
-                  <span
-                    key={tag}
-                    className="inline-flex items-center gap-2 rounded-full bg-blue-50 px-3 py-1 text-sm text-blue-800"
-                  >
-                    {tag}
+              <section aria-labelledby="contact-form-tags-heading">
+                <h3 id="contact-form-tags-heading" className="contact-details-section-title">
+                  Tags
+                </h3>
+                <fieldset className="contact-form-tag-panel mt-3">
+                  <legend className="sr-only">Manage contact tags</legend>
+                  <div className="mb-3 flex flex-wrap gap-2">
+                    {formData.tags.length === 0 ? (
+                      <span className="contact-details-empty">No tags assigned</span>
+                    ) : (
+                      formData.tags.map((tag) => (
+                        <span key={tag} className="contact-details-tag inline-flex items-center gap-2">
+                          {tag}
+                          <button
+                            type="button"
+                            aria-label={`Remove ${tag} tag`}
+                            onClick={() =>
+                              updateField(
+                                "tags",
+                                formData.tags.filter((current) => current !== tag),
+                              )
+                            }
+                            className="contact-form-remove-tag"
+                          >
+                            <X size={14} />
+                          </button>
+                        </span>
+                      ))
+                    )}
+                  </div>
+                  <div className="flex gap-2">
+                    <input
+                      className="contact-form-input min-w-0 flex-1"
+                      aria-label="New tag"
+                      placeholder="Add a tag"
+                      value={newTag}
+                      maxLength={50}
+                      onChange={(event) => setNewTag(event.target.value)}
+                      onKeyDown={(event) => {
+                        if (event.key === "Enter") {
+                          event.preventDefault();
+                          addTag();
+                        }
+                      }}
+                    />
                     <button
                       type="button"
-                      aria-label={`Remove ${tag} tag`}
-                      onClick={() =>
-                        updateField(
-                          "tags",
-                          formData.tags.filter((current) => current !== tag),
-                        )
-                      }
-                      className="font-bold hover:text-red-700"
+                      onClick={addTag}
+                      className="contact-details-secondary-button rounded-xl px-3 py-2 text-sm font-semibold"
                     >
-                      ×
+                      Add tag
                     </button>
-                  </span>
-                ))
+                  </div>
+                </fieldset>
+              </section>
+              {error && (
+                <p role="alert" className="contact-details-error">
+                  {error}
+                </p>
               )}
             </div>
-            <div className="flex gap-2">
-              <input
-                className="min-w-0 flex-1 rounded border p-2"
-                aria-label="New tag"
-                placeholder="Add a tag"
-                value={newTag}
-                maxLength={50}
-                onChange={(event) => setNewTag(event.target.value)}
-                onKeyDown={(event) => {
-                  if (event.key === "Enter") {
-                    event.preventDefault();
-                    addTag();
-                  }
-                }}
-              />
-              <button
-                type="button"
-                onClick={addTag}
-                className="rounded border px-3 py-2 hover:bg-gray-50"
-              >
-                Add tag
-              </button>
-            </div>
-          </fieldset>
-
-          {error && (
-            <p role="alert" className="text-sm text-red-700 sm:col-span-2">
-              {error}
-            </p>
-          )}
-          <div className="mt-2 flex justify-end gap-2 sm:col-span-2">
+          </div>
+          <footer className="contact-details-footer flex shrink-0 justify-end gap-3 px-5 py-4 sm:px-7">
             <button
               type="button"
               onClick={onClose}
-              className="rounded border px-4 py-2"
+              className="contact-details-secondary-button rounded-xl px-4 py-2.5 text-sm font-semibold"
             >
               Cancel
             </button>
             <button
               type="submit"
               disabled={saving}
-              className="rounded bg-blue-600 px-4 py-2 text-white disabled:opacity-60"
+              className="contact-details-primary-button rounded-xl px-5 py-2.5 text-sm font-semibold text-white disabled:opacity-60"
             >
-              {saving ? "Saving..." : isEditing ? "Save Changes" : "Create Contact"}
+              {saving ? "Saving..." : isEditing ? "Save changes" : "Create contact"}
             </button>
-          </div>
+          </footer>
         </form>
       </section>
     </div>
