@@ -79,6 +79,71 @@ button.contact-list-icon-button:not(:disabled):hover {
   background: #f8fafc;
 }
 
+.contact-name-link[data-tooltip],
+.contact-cell-tooltip[data-tooltip],
+.contact-tags-tooltip[data-tooltip] {
+  position: relative;
+}
+
+.contact-name-link[data-tooltip]::after,
+.contact-cell-tooltip[data-tooltip]::after,
+.contact-tags-tooltip[data-tooltip]::after {
+  position: absolute;
+  z-index: 60;
+  bottom: calc(100% + 0.5rem);
+  left: 50%;
+  width: max-content;
+  max-width: min(20rem, calc(100vw - 2rem));
+  transform: translate(-50%, 0.25rem);
+  border: 1px solid #dbe5f1;
+  border-radius: 0.75rem;
+  background: #ffffff;
+  box-shadow: 0 12px 28px rgb(15 23 42 / 16%);
+  padding: 0.5rem 0.75rem;
+  color: #334155;
+  content: attr(data-tooltip);
+  font-size: 0.75rem;
+  font-weight: 500;
+  line-height: 1.4;
+  white-space: normal;
+  overflow-wrap: anywhere;
+  opacity: 0;
+  pointer-events: none;
+  visibility: hidden;
+  transition:
+    opacity 120ms ease,
+    transform 120ms ease,
+    visibility 120ms ease;
+}
+
+.contact-name-link[data-tooltip]:hover::after,
+.contact-name-link[data-tooltip]:focus-visible::after,
+.contact-cell-tooltip[data-tooltip]:hover::after,
+.contact-tags-tooltip[data-tooltip]:hover::after {
+  transform: translate(-50%, 0);
+  opacity: 1;
+  visibility: visible;
+}
+
+.contact-cell-tooltip[data-tooltip]::after,
+.contact-tags-tooltip[data-tooltip]::after {
+  left: 0;
+  transform: translate(0, 0.25rem);
+}
+
+.contact-cell-tooltip[data-tooltip]:hover::after,
+.contact-tags-tooltip[data-tooltip]:hover::after {
+  transform: translate(0, 0);
+}
+
+.contact-cell-tooltip[data-tooltip]::after {
+  bottom: calc(100% + 0.25rem);
+}
+
+.contact-tags-tooltip[data-tooltip]::after {
+  bottom: calc(100% + 0.5rem);
+}
+
 .contact-mobile-card {
   border-color: #e3eaf3;
   background: #ffffff;
@@ -190,6 +255,15 @@ button.contact-list-retry:not(:disabled):hover {
   border-color: #343b48;
   background: #222731;
   color: #b0b8c5;
+}
+
+[data-theme="dark"] .contact-name-link[data-tooltip]::after,
+[data-theme="dark"] .contact-cell-tooltip[data-tooltip]::after,
+[data-theme="dark"] .contact-tags-tooltip[data-tooltip]::after {
+  border-color: #485264;
+  background: #222731;
+  box-shadow: 0 12px 28px rgb(0 0 0 / 35%);
+  color: #e7eaf0;
 }
 
 [data-theme="dark"] .contact-mobile-card {

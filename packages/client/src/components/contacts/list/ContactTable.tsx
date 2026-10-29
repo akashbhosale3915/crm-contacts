@@ -96,11 +96,11 @@ export default function ContactTable({
                       }
                     />
                   </td>
-                  <td className="overflow-hidden p-4 font-medium text-slate-900">
+                  <td className="p-4 font-medium text-slate-900">
                     <button
                       type="button"
                       onClick={() => onOpenDetails(contact._id)}
-                      title={name}
+                      data-tooltip={name}
                       className="contact-name-link block w-full truncate text-left hover:text-blue-700 hover:underline"
                     >
                       {name}
@@ -109,7 +109,7 @@ export default function ContactTable({
                   <Cell value={contact.email} />
                   <Cell value={contact.phone} />
                   <Cell value={contact.company} />
-                  <td className="overflow-hidden p-4">
+                  <td className="p-4">
                     <ContactTags tags={contact.tags} compact />
                   </td>
                   <td className="overflow-hidden p-4">
@@ -131,8 +131,11 @@ export default function ContactTable({
 
 function Cell({ value }: { value?: string }) {
   return (
-    <td className="overflow-hidden p-4 text-slate-600">
-      <span className="block truncate" title={value || ""}>
+    <td className="p-4 text-slate-600">
+      <span
+        className="contact-cell-tooltip block truncate"
+        data-tooltip={value || undefined}
+      >
         {value || "—"}
       </span>
     </td>

@@ -21,7 +21,10 @@ export default function ContactTags({
   const visibleTags = compact ? tags.slice(0, 2) : tags;
 
   return (
-    <div className="flex min-w-0 flex-wrap gap-1" title={tags.join(", ")}>
+    <div
+      className="contact-tags-tooltip flex min-w-0 flex-wrap gap-1"
+      data-tooltip={tags.length > 0 ? tags.join(", ") : undefined}
+    >
       {visibleTags.map((tag) => (
         <span
           key={tag}
