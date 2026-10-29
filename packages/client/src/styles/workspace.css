@@ -79,13 +79,13 @@ button.contact-list-icon-button:not(:disabled):hover {
   background: #f8fafc;
 }
 
-.contact-name-link[data-tooltip],
+.contact-name-tooltip[data-tooltip],
 .contact-cell-tooltip[data-tooltip],
 .contact-tags-tooltip[data-tooltip] {
   position: relative;
 }
 
-.contact-name-link[data-tooltip]::after,
+.contact-name-tooltip[data-tooltip]::after,
 .contact-cell-tooltip[data-tooltip]::after,
 .contact-tags-tooltip[data-tooltip]::after {
   position: absolute;
@@ -116,9 +116,10 @@ button.contact-list-icon-button:not(:disabled):hover {
     visibility 120ms ease;
 }
 
-.contact-name-link[data-tooltip]:hover::after,
-.contact-name-link[data-tooltip]:focus-visible::after,
+.contact-name-tooltip[data-tooltip]:hover::after,
+.contact-name-tooltip[data-tooltip]:focus-within::after,
 .contact-cell-tooltip[data-tooltip]:hover::after,
+.contact-cell-tooltip[data-tooltip]:focus-visible::after,
 .contact-tags-tooltip[data-tooltip]:hover::after {
   transform: translate(-50%, 0);
   opacity: 1;
@@ -257,7 +258,7 @@ button.contact-list-retry:not(:disabled):hover {
   color: #b0b8c5;
 }
 
-[data-theme="dark"] .contact-name-link[data-tooltip]::after,
+[data-theme="dark"] .contact-name-tooltip[data-tooltip]::after,
 [data-theme="dark"] .contact-cell-tooltip[data-tooltip]::after,
 [data-theme="dark"] .contact-tags-tooltip[data-tooltip]::after {
   border-color: #485264;

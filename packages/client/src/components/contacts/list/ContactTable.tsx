@@ -1,6 +1,8 @@
+import { useRef } from "react";
 import type { Contact } from "../../../../../shared/src";
 import ContactActions from "./ContactActions";
 import ContactTags from "./ContactTags";
+import { useTruncatedTooltip } from "./useTruncatedTooltip";
 
 interface ContactTableProps {
   contacts: Contact[];
@@ -97,14 +99,10 @@ export default function ContactTable({
                     />
                   </td>
                   <td className="p-4 font-medium text-slate-900">
-                    <button
-                      type="button"
+                    <ContactName
+                      name={name}
                       onClick={() => onOpenDetails(contact._id)}
-                      data-tooltip={name}
-                      className="contact-name-link block w-full truncate text-left hover:text-blue-700 hover:underline"
-                    >
-                      {name}
-                    </button>
+                    />
                   </td>
                   <Cell value={contact.email} />
                   <Cell value={contact.phone} />
@@ -129,14 +127,46 @@ export default function ContactTable({
   );
 }
 
+function ContactName({
+  name,
+  onClick,
+}: {
+  name: string;
+  onClick: () => void;
+}) {
+  const elementRef = useRef<HTMLSpanElement>(null);
+  const tooltipProps = useTruncatedTooltip(elementRef, name, false);
+
+  return (
+    <span
+      ref={elementRef}
+      {...tooltipProps}
+      className="contact-name-tooltip block min-w-0"
+    >
+      <button
+        type="button"
+        onClick={onClick}
+        className="contact-name-link block w-full truncate text-left hover:text-blue-700 hover:underline"
+      >
+        {name}
+      </button>
+    </span>
+  );
+}
+
 function Cell({ value }: { value?: string }) {
+  const text = value || "—";
+  const elementRef = useRef<HTMLSpanElement>(null);
+  const tooltipProps = useTruncatedTooltip(elementRef, text);
+
   return (
     <td className="p-4 text-slate-600">
       <span
-        className="contact-cell-tooltip block truncate"
-        data-tooltip={value || undefined}
+        ref={elementRef}
+        className="contact-cell-tooltip block min-w-0"
+        {...tooltipProps}
       >
-        {value || "—"}
+        <span className="block truncate">{text}</span>
       </span>
     </td>
   );
