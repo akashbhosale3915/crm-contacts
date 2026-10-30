@@ -87,10 +87,10 @@ export function parseContactInput(
   }
 
   if (input.email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(input.email)) {
-    throw new RequestValidationError("email must be a valid email address");
+    throw new RequestValidationError("Email must be a valid email address");
   }
   if (input.phone && !isValidPhoneNumber(input.phone)) {
-    throw new RequestValidationError("phone must contain exactly 10 digits");
+    throw new RequestValidationError("Phone must contain exactly 10 digits");
   }
   if (!partial || value.tags !== undefined) {
     input.tags = readTags(value.tags) ?? [];
@@ -102,7 +102,7 @@ export function parseContactInput(
   }
   if (partial) return input;
   if (input.firstName === undefined || input.lastName === undefined) {
-    throw new RequestValidationError("firstName and lastName are required");
+    throw new RequestValidationError("FirstName and LastName are required");
   }
   return {
     ...input,

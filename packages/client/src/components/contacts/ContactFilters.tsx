@@ -1,5 +1,6 @@
 import { RefreshCw, RotateCcw, Search } from "lucide-react";
 import type { ContactListQuery } from "../../../../shared/src";
+import ContactFilterSelect from "./ContactFilterSelect";
 
 interface ContactFiltersProps {
   search: string;
@@ -52,19 +53,16 @@ export default function ContactFilters({
           onChange={(event) => onSearchChange(event.target.value)}
         />
       </div>
-      <select
+      <ContactFilterSelect
         aria-label="Filter by tag"
-        className="contact-filter-control min-w-0 flex-1 rounded-xl border px-3 py-2.5 sm:w-40 sm:flex-none"
+        className="min-w-0 flex-1 sm:w-40 sm:flex-none"
         value={tag}
-        onChange={(event) => onTagChange(event.target.value)}
-      >
-        <option value="">All Tags</option>
-        {tags.map((option) => (
-          <option key={option} value={option}>
-            {option}
-          </option>
-        ))}
-      </select>
+        onChange={onTagChange}
+        options={[
+          { value: "", label: "All Tags" },
+          ...tags.map((option) => ({ value: option, label: option })),
+        ]}
+      />
       <input
         className="contact-filter-control min-w-0 flex-1 rounded-xl border px-3 py-2.5 sm:min-w-48"
         placeholder="Filter by company..."
@@ -72,12 +70,12 @@ export default function ContactFilters({
         value={company}
         onChange={(event) => onCompanyChange(event.target.value)}
       />
-      <select
+      <ContactFilterSelect
         aria-label="Sort contacts"
-        className="contact-filter-control min-w-0 flex-1 rounded-xl border px-3 py-2.5 sm:w-48 sm:flex-none"
+        className="min-w-0 flex-1 sm:w-48 sm:flex-none"
         value={`${sortBy}:${sortOrder}`}
-        onChange={(event) => {
-          const [nextSortBy, nextSortOrder] = event.target.value.split(":");
+        onChange={(value) => {
+          const [nextSortBy, nextSortOrder] = value.split(":");
           if (
             (nextSortBy === "name" || nextSortBy === "createdDate") &&
             (nextSortOrder === "asc" || nextSortOrder === "desc")
@@ -85,12 +83,13 @@ export default function ContactFilters({
             onSortChange(nextSortBy, nextSortOrder);
           }
         }}
-      >
-        <option value="createdDate:desc">Newest First</option>
-        <option value="createdDate:asc">Oldest First</option>
-        <option value="name:asc">Name A–Z</option>
-        <option value="name:desc">Name Z–A</option>
-      </select>
+        options={[
+          { value: "createdDate:desc", label: "Newest First" },
+          { value: "createdDate:asc", label: "Oldest First" },
+          { value: "name:asc", label: "Name A–Z" },
+          { value: "name:desc", label: "Name Z–A" },
+        ]}
+      />
       {hasActiveFilters && (
         <button
           type="button"
