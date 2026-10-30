@@ -18,6 +18,12 @@ The client runs through Vite (normally at `http://localhost:5173`) and the API r
 
 Run `npm run build` to create the frontend and backend production outputs. Configure Nginx (or another web server) to serve `packages/client/dist` and proxy `/api` requests to the backend. Set production `MONGO_URI` and `PORT`, then run `npm start` from the repository root to start the compiled backend. Use a process manager such as systemd or PM2 to keep it running and restart it after reboots; the frontend is static files and does not need a Node dev server.
 
+## GitHub Actions
+
+The client and server have separate workflows under `.github/workflows/`. On pushes and pull requests targeting `main`, client changes build only the client, and server changes test and build only the server. Changes to shared contracts or root dependency manifests and lockfile trigger both relevant workflows. Both jobs use the root `package-lock.json` with `npm ci`; setup-node caches npm's package download cache keyed by that lockfile. Pushes to `main` deploy only the changed app to EC2 over SSH: the client workflow syncs its built static files, and the server workflow syncs compiled output, installs production dependencies, and restarts the `crm-api` PM2 process. Pull requests do not deploy.
+
+Configure these GitHub repository secrets for deployment: `EC2_HOST` (the EC2 public IP or DNS name), `EC2_USER` (for example, `ubuntu`), `EC2_SSH_PRIVATE_KEY` (the deployment key's private key), and `EC2_KNOWN_HOSTS` (the verified SSH host-key line for that host). The EC2 user must be able to write to `/var/www/crm-contacts`, and PM2 must have a process named `crm-api`. Keep SSH ingress restricted; GitHub-hosted runner IPs are not static, so consider a self-hosted runner or AWS Systems Manager if you cannot safely allow the runner connections.
+
 ## Features
 
 - Browse, search by name/email/phone, filter by tag and company, sort by name or created date, and paginate through backend results.

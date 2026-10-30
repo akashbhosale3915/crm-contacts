@@ -1,0 +1,83 @@
+name: Server CI
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "packages/server/**"
+      - "packages/shared/**"
+      - "package.json"
+      - "package-lock.json"
+      - ".github/workflows/server-ci.yml"
+  pull_request:
+    branches: [main]
+    paths:
+      - "packages/server/**"
+      - "packages/shared/**"
+      - "package.json"
+      - "package-lock.json"
+      - ".github/workflows/server-ci.yml"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: server-ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  test-and-build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: package-lock.json
+
+      - name: Verify root lockfile
+        run: test -f package-lock.json
+
+      - name: Install server dependencies
+        run: npm ci --workspace=server --include-workspace-root=false
+
+      - name: Test server
+        run: npm test --workspace=server
+
+      - name: Build server
+        run: npm run build --workspace=server
+
+      - name: Configure SSH
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        env:
+          EC2_SSH_PRIVATE_KEY: ${{ secrets.EC2_SSH_PRIVATE_KEY }}
+          EC2_KNOWN_HOSTS: ${{ secrets.EC2_KNOWN_HOSTS }}
+        run: |
+          test -n "$EC2_SSH_PRIVATE_KEY"
+          test -n "$EC2_KNOWN_HOSTS"
+          install -d -m 700 ~/.ssh
+          printf '%s\n' "$EC2_SSH_PRIVATE_KEY" > ~/.ssh/id_ed25519
+          chmod 600 ~/.ssh/id_ed25519
+          printf '%s\n' "$EC2_KNOWN_HOSTS" > ~/.ssh/known_hosts
+          chmod 600 ~/.ssh/known_hosts
+
+      - name: Deploy server to EC2
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        env:
+          EC2_HOST: ${{ secrets.EC2_HOST }}
+          EC2_USER: ${{ secrets.EC2_USER }}
+        run: |
+          test -n "$EC2_HOST"
+          test -n "$EC2_USER"
+          rsync -az --delete packages/server/dist/ \
+            "$EC2_USER@$EC2_HOST:/var/www/crm-contacts/packages/server/dist/"
+          rsync -az package.json package-lock.json \
+            "$EC2_USER@$EC2_HOST:/var/www/crm-contacts/"
+          rsync -az packages/server/package.json \
+            "$EC2_USER@$EC2_HOST:/var/www/crm-contacts/packages/server/"
+          ssh "$EC2_USER@$EC2_HOST" \
+            'bash -lc "cd /var/www/crm-contacts && npm ci --omit=dev --workspace=server --include-workspace-root=false && pm2 restart crm-api --update-env"'
