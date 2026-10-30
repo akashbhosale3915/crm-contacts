@@ -12,7 +12,7 @@ npm run seed
 npm run dev
 ```
 
-The client runs through Vite (normally at `http://localhost:5173`) and the API runs at `http://localhost:3000`. `MONGO_URI` and `PORT` are optional environment variables that can also be set in a local `.env` file. If `MONGO_URI` is omitted, the server and seed command connect to `mongodb://127.0.0.1:27017/crm`. Each `npm run seed` invocation inserts 50 new demonstration contacts. It does not clear or check existing records, so a collision with an existing unique email can cause an insert to fail. Seeded email addresses use the contact's first and last names with `fake.com`, `test.com`, `new.com`, or `droidtech.in` domains, and phone numbers are generated as 10-digit strings.
+The client runs through Vite (normally at `http://localhost:5173`) and proxies `/api` requests to the backend at `http://localhost:8000`. Set `API_PROXY_TARGET` in the client environment to use a different backend URL. `MONGO_URI` and `PORT` are optional environment variables that can also be set in a local `.env` file. If `MONGO_URI` is omitted, the server and seed command connect to `mongodb://127.0.0.1:27017/crm`. Each `npm run seed` invocation inserts 50 new demonstration contacts. It does not clear or check existing records, so a collision with an existing unique email can cause an insert to fail. Seeded email addresses use the contact's first and last names with `fake.com`, `test.com`, `new.com`, or `droidtech.in` domains, and phone numbers are generated as 10-digit strings.
 
 ## Production
 
