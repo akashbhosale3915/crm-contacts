@@ -25,7 +25,7 @@ export default function ContactsHeader({
               CRM Contacts Workspace
             </h1>
             <p className="crm-app-subtitle hidden text-sm sm:block">
-              Browse, filter, edit &amp; manage contact tags
+              Browse, filter, edit &amp; manage contact tags.
             </p>
           </div>
         </div>
