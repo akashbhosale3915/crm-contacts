@@ -14,6 +14,10 @@ npm run dev
 
 The client runs through Vite (normally at `http://localhost:5173`) and the API runs at `http://localhost:3000`. `MONGO_URI` and `PORT` are optional environment variables that can also be set in a local `.env` file. If `MONGO_URI` is omitted, the server and seed command connect to `mongodb://127.0.0.1:27017/crm`. Each `npm run seed` invocation inserts 50 new demonstration contacts. It does not clear or check existing records, so a collision with an existing unique email can cause an insert to fail. Seeded email addresses use the contact's first and last names with `fake.com`, `test.com`, `new.com`, or `droidtech.in` domains, and phone numbers are generated as 10-digit strings.
 
+## Production
+
+Run `npm run build` to create the frontend and backend production outputs. Configure Nginx (or another web server) to serve `packages/client/dist` and proxy `/api` requests to the backend. Set production `MONGO_URI` and `PORT`, then run `npm start` from the repository root to start the compiled backend. Use a process manager such as systemd or PM2 to keep it running and restart it after reboots; the frontend is static files and does not need a Node dev server.
+
 ## Features
 
 - Browse, search by name/email/phone, filter by tag and company, sort by name or created date, and paginate through backend results.
@@ -48,7 +52,7 @@ Shared TypeScript contracts live in `packages/shared/src/index.d.ts`. The API su
 - List query parameters are allowlisted and validated; regex search/filter values are escaped, and page size is capped at 100.
 - Contact edits submit the observed Mongoose `__v`. The server rejects stale versions with HTTP 409 and Mongoose optimistic concurrency also detects races that happen during save.
 - Tag changes made through the edit form are persisted with the contact update and logged as `TAG_ADDED`/`TAG_REMOVED`; bulk assignment only logs contacts whose tag changed.
-- Backend request-validation tests run with `npm test` (or `npm test --workspace=server`). Server type-check and frontend build/type-check and lint run with `npm run build --workspace=server`, `npm run build --workspace=client`, and `npm run lint --workspace=client`.
+- Backend request-validation tests run with `npm test` (or `npm test --workspace=server`). Run `npm run build` from the repository root to build both workspaces concurrently; the client and server outputs are written to `packages/client/dist` and `packages/server/dist`. Run `npm start` to start the compiled backend after building. Run `npm run lint --workspace=client` for frontend linting.
 
 ## Known limitations
 

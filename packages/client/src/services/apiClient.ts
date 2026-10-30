@@ -2,7 +2,10 @@ import axios from "axios";
 import type { ApiErrorResponse } from "../../../shared/src";
 
 const apiClient = axios.create({
-  baseURL: "http://localhost:3000/api",
+  baseURL:
+    import.meta.env.MODE === "development"
+      ? "http://localhost:8000/api"
+      : "/api",
 });
 
 export const getApiErrorMessage = (

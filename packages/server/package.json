@@ -5,7 +5,8 @@
   "scripts": {
     "test": "node --test -r ts-node/register src/*.test.ts",
     "dev": "nodemon --watch src -e ts,json --exec ts-node src/server.ts",
-    "build": "tsc --noEmit",
+    "build": "tsc",
+    "start": "node dist/server.js",
     "seed": "ts-node src/seed.ts"
   },
   "keywords": [],

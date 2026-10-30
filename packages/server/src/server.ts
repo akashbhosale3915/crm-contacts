@@ -3,7 +3,7 @@ import mongoose from "mongoose";
 import app from "./app";
 import { connectToDatabase } from "./config/database";
 
-const port = Number(process.env.PORT) || 3000;
+const port = Number(process.env.PORT) || 8000;
 
 async function startServer(): Promise<void> {
   await connectToDatabase();

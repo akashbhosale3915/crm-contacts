@@ -9,6 +9,8 @@
   "scripts": {
     "test": "npm test --workspace=server",
     "dev": "concurrently -k \"npm run dev -w client\" \"npm run dev -w server\"",
+    "build": "concurrently -k \"npm run build --workspace=client\" \"npm run build --workspace=server\"",
+    "start": "npm run start --workspace=server",
     "seed": "npm run seed --workspace=server"
   },
   "devDependencies": {
