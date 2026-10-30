@@ -1,27 +1,12 @@
 import "dotenv/config";
 import mongoose from "mongoose";
-import { faker } from "@faker-js/faker";
 import { connectToDatabase } from "./config/database";
 import Contact from "./models/contact";
+import { generateSeedContacts } from "./seedData";
 
 async function seed() {
   await connectToDatabase();
-  const contacts = Array.from({ length: 50 }, (_, index) => {
-    const firstName = faker.person.firstName();
-    const lastName = faker.person.lastName();
-    return {
-      firstName,
-      lastName,
-      email: `${faker.internet.username({ firstName, lastName }).toLowerCase()}-${index}@example.test`,
-      phone: faker.phone.number(),
-      company: faker.company.name(),
-      tags: faker.helpers.arrayElements(
-        ["Lead", "Customer", "VIP", "Prospect"],
-        2,
-      ),
-    };
-  });
-
+  const contacts = generateSeedContacts();
   await Contact.insertMany(contacts);
   console.log(`Seeded ${contacts.length} demonstration contacts.`);
 }

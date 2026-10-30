@@ -12,7 +12,7 @@ npm run seed
 npm run dev
 ```
 
-The client runs through Vite (normally at `http://localhost:5173`) and the API runs at `http://localhost:3000`. `MONGO_URI` and `PORT` are optional environment variables that can also be set in a local `.env` file. If `MONGO_URI` is omitted, the server and seed command connect to `mongodb://127.0.0.1:27017/crm`. Each `npm run seed` invocation inserts 50 new demonstration contacts. It does not clear or check existing records, so running it repeatedly appends another batch; a generated email collision with the unique email index can cause an insert to fail. Seeded email addresses use the reserved `.test` domain.
+The client runs through Vite (normally at `http://localhost:5173`) and the API runs at `http://localhost:3000`. `MONGO_URI` and `PORT` are optional environment variables that can also be set in a local `.env` file. If `MONGO_URI` is omitted, the server and seed command connect to `mongodb://127.0.0.1:27017/crm`. Each `npm run seed` invocation inserts 50 new demonstration contacts. It does not clear or check existing records, so a collision with an existing unique email can cause an insert to fail. Seeded email addresses use the contact's first and last names with `fake.com`, `test.com`, `new.com`, or `droidtech.in` domains, and phone numbers are generated as 10-digit strings.
 
 ## Features
 
@@ -20,13 +20,13 @@ The client runs through Vite (normally at `http://localhost:5173`) and the API r
 - Create and view contacts; edit contact fields and add or remove tags.
 - Assign tags to multiple selected contacts.
 - View the latest 20 contact activity records.
-- Validate inputs, enforce optional unique email addresses, and detect stale updates with optimistic concurrency.
+- Validate inputs, enforce optional unique email addresses and exactly 10-digit phone numbers, and detect stale updates with optimistic concurrency.
 
 ## Data model and API
 
 Contacts have first/last name, optional email, phone, company, a string-array of tags, and created/updated timestamps. MongoDB stores contacts and activity records; an optional email has a sparse unique index. Activity records contain a contact ID, timestamp, type (`CONTACT_UPDATED`, `TAG_ADDED`, or `TAG_REMOVED`), and optional details.
 
-Shared TypeScript contracts live in `packages/shared/src/index.d.ts`. The API supports contact list retrieval, tag discovery, individual contact retrieval, create/update, bulk tag assignment, and recent activity retrieval. List search, filtering, sorting, and pagination run on the server.
+Shared TypeScript contracts live in `packages/shared/src/index.d.ts`. The API supports contact list retrieval, tag discovery, individual contact retrieval, create/update, bulk tag assignment, and recent activity retrieval. List search, filtering, sorting, and pagination run on the server. Phone numbers must contain exactly 10 digits.
 
 ## Project structure
 

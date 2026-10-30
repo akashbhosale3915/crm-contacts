@@ -181,11 +181,25 @@ export default function ContactModal({
                   <label className="contact-form-field">
                     Phone
                     <input
+                      type="text"
+                      inputMode="numeric"
+                      pattern="[0-9]{10}"
                       className="contact-form-input"
                       value={formData.phone}
-                      onChange={(event) => updateField("phone", event.target.value)}
-                      maxLength={100}
+                      onChange={(event) =>
+                        updateField(
+                          "phone",
+                          event.target.value.replace(/[^0-9]/g, "").slice(0, 10),
+                        )
+                      }
+                      maxLength={10}
+                      placeholder="10 digits"
+                      title="Enter exactly 10 digits"
+                      aria-describedby="contact-phone-hint"
                     />
+                    <span id="contact-phone-hint" className="sr-only">
+                      Enter exactly 10 digits. Only digits are accepted.
+                    </span>
                   </label>
                   <label className="contact-form-field sm:col-span-2">
                     Company

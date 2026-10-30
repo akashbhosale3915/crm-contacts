@@ -5,9 +5,12 @@ import {
   parseContactInput,
   parseContactListQuery,
   parseTag,
+  isValidPhoneNumber,
   RequestValidationError,
 } from "./validation";
 import { hasContactChanges } from "./services/contactChanges";
+import Contact from "./models/contact";
+import { generateSeedContacts } from "./seedData";
 
 describe("contact input validation", () => {
   it("normalizes valid contact fields and deduplicates tags", () => {
@@ -74,6 +77,60 @@ describe("contact input validation", () => {
       /firstName must be/,
     );
     assert.throws(() => parseContactInput({}, true), /At least one/);
+  });
+
+  it("accepts exactly 10 digits and rejects formatted or different-length numbers", () => {
+    assert.equal(isValidPhoneNumber("3055948588"), true);
+    assert.equal(isValidPhoneNumber("0123456789"), true);
+    assert.equal(isValidPhoneNumber("305.594.8588"), false);
+    assert.equal(isValidPhoneNumber("+13055948588"), false);
+    assert.equal(isValidPhoneNumber("305594858"), false);
+    assert.equal(isValidPhoneNumber("30559485880"), false);
+    assert.throws(
+      () =>
+        parseContactInput({
+          firstName: "Ada",
+          lastName: "Lovelace",
+          phone: "305.594.8588",
+        }),
+      /exactly 10 digits/,
+    );
+    assert.throws(
+      () =>
+        parseContactInput({
+          firstName: "Ada",
+          lastName: "Lovelace",
+          phone: " 3055948588 ",
+        }),
+      /exactly 10 digits/,
+    );
+  });
+
+  it("enforces valid phone numbers in the MongoDB contact schema", async () => {
+    for (const phone of ["305594858", "305.594.8588", " 3055948588 "]) {
+      const contact = new Contact({
+        firstName: "Ada",
+        lastName: "Lovelace",
+        phone,
+      });
+      await assert.rejects(contact.validate(), /exactly 10 digits/);
+    }
+  });
+
+  it("generates name-based emails on supported domains and 10-digit demo numbers", () => {
+    const contacts = generateSeedContacts(10);
+    assert.equal(contacts.length, 10);
+    const emails = new Set<string>();
+    for (const contact of contacts) {
+      assert.match(contact.phone, /^\d{10}$/);
+      assert.match(
+        contact.email,
+        /^[a-z0-9]+\.[a-z0-9]+@(fake\.com|test\.com|new\.com|droidtech\.in)$/,
+      );
+      assert.equal(emails.has(contact.email), false);
+      emails.add(contact.email);
+      assert.ok(contact.company.length > 0);
+    }
   });
 });
 

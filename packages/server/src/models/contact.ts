@@ -1,4 +1,5 @@
 import mongoose, { Schema, Document } from "mongoose";
+import { isValidPhoneNumber } from "../validation/phone";
 
 export interface IContact extends Document {
   id: string;
@@ -25,7 +26,14 @@ const ContactSchema = new Schema<IContact>(
       lowercase: true,
       maxlength: 254,
     },
-    phone: { type: String, default: "", trim: true, maxlength: 100 },
+    phone: {
+      type: String,
+      default: "",
+      validate: {
+        validator: (value: string) => value === "" || isValidPhoneNumber(value),
+        message: "phone must contain exactly 10 digits",
+      },
+    },
     company: { type: String, default: "", trim: true, maxlength: 100 },
     tags: { type: [String], default: [] },
   },

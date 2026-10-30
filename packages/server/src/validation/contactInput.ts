@@ -4,18 +4,20 @@ import {
   rejectUnknownFields,
   RequestValidationError,
 } from "./common";
+import { isValidPhoneNumber } from "./phone";
 
 const readText = (
   value: unknown,
   field: string,
   maxLength: number,
   optional = true,
+  trim = true,
 ): string | undefined => {
   if (value === undefined && optional) return undefined;
   if (typeof value !== "string") {
     throw new RequestValidationError(`${field} must be a string`);
   }
-  const text = value.trim();
+  const text = trim ? value.trim() : value;
   if ((!optional && text.length === 0) || text.length > maxLength) {
     throw new RequestValidationError(
       `${field} must be ${optional ? "at most" : "between 1 and"} ${maxLength} characters`,
@@ -78,6 +80,7 @@ export function parseContactInput(
         field,
         field === "email" ? 254 : 100,
         !required,
+        field !== "phone",
       );
       if (text !== undefined) input[field] = text;
     }
@@ -85,6 +88,9 @@ export function parseContactInput(
 
   if (input.email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(input.email)) {
     throw new RequestValidationError("email must be a valid email address");
+  }
+  if (input.phone && !isValidPhoneNumber(input.phone)) {
+    throw new RequestValidationError("phone must contain exactly 10 digits");
   }
   if (!partial || value.tags !== undefined) {
     input.tags = readTags(value.tags) ?? [];
